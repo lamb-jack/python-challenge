@@ -5,7 +5,7 @@ import os
 import csv
 import sys # to export print
 
-file_path = os.path.join("..", "Resources", "election_data.csv")
+file_path = os.path.join("Resources", "election_data.csv")
 
 votes_lot = []
 Khan = []
@@ -54,7 +54,7 @@ else:
     winner = "O'Tooley"
 
 # print all
-
+print("")
 print("Election Results")
 print("---------------------------")
 print(f"Total Votes: {len(votes_lot)}")
@@ -69,8 +69,9 @@ print("---------------------------")
 
 original_stdout = sys.stdout
 
-with open("../Analysis/PyPoll_final.txt", "w") as f:    #export to .txt file
+with open("Analysis/PyPoll_final.txt", "w") as f:    #export to .txt file
     sys.stdout = f
+    print("")
     print("Election Results")
     print("---------------------------")
     print(f"Total Votes: {len(votes_lot)}")

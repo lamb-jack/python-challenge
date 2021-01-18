@@ -3,67 +3,69 @@
 
 import os
 import csv
-import statistics # to get mean
 import sys # to export print
 
-file_path = os.path.join("..", "Resources", "budget_data.csv")
+file_path = os.path.join("Resources", "budget_data.csv")
 
 lot = []
 total = []
-change = []
+change = 0
+previous_budget = 0
+change_total = 0
+change_count = 0
+greatest_increase = 0
+greatest_decrease = 0
 
 with open(file_path, newline='') as csvfile:    #to populate months and total
     reader = csv.reader(csvfile, delimiter=",")
     next(reader, None) # skip header
 
     for row in reader:
-        lot.append(row)
+
+        lot.append(row) # append to get total
 
         convert = int(row[1])
         total.append(convert)
 
+        current_budget = int(row[1])
+        
+        if previous_budget != 0: # to get change
+            change = current_budget - previous_budget
+            change_total += change
+            change_count += 1
+            
+        previous_budget = current_budget
 
-highest = max(total)
-lowest = min(total)
+        if change > greatest_increase: # to get greatest increase and decrease
+            greatest_increase = change
+            i_date = row[0]
+        if change < greatest_decrease:
+            greatest_decrease = change
+            d_date = row[0]
 
-index_h = int(total.index(highest))
-index_l = int(total.index(lowest))
 
-top = []
-bottom = []
+change_avg = round(change_total/change_count, 2) # change average
 
-with open(file_path, newline='') as csvfile:    # to populate increase and decrease
-    reader = csv.reader(csvfile, delimiter=",")
-    next(reader, None)
-    for i, row in enumerate(reader):
-        if i == index_h:
-            top.extend(row)
-        elif i == index_l:
-            bottom.extend(row)
-            break
-
-Increase = " ($".join(top)
-Decrease = " ($".join(bottom)
-
+print("")
 print("Financial Analysis")
 print("-----------------------------------------")
-print(f"Total lot: {len(lot)}")   # print to terminal
+print(f"Total Months: {len(lot)}")   # print to terminal
 print(f"Total: ${sum(total)}")
-print(f"Average  Change: ${(change)}")
-print(f"Greatest Increase in Profits: {Increase})")
-print(f"Greatest Decrease in Profits: {Decrease})")
-
+print(f"Average  Change: ${(change_avg)}")
+print(f"Greatest Increase in Profits: {i_date} (${greatest_increase})")
+print(f"Greatest Decrease in Profits: {d_date} (${greatest_decrease})")
 
 original_stdout = sys.stdout
 
-with open("../Analysis/PyBank_final.txt", "w") as f:    #export to .txt file
+with open("Analysis/PyBank_final.txt", "w") as f:    #export to .txt file
     sys.stdout = f
+    print("")
     print("Financial Analysis")
     print("-----------------------------------------")
-    print(f"Total lot: {len(lot)}")
+    print(f"Total Months: {len(lot)}")
     print(f"Total: ${sum(total)}")
-    print(f"Average  Change: ${(change)}")
-    print(f"Greatest Increase in Profits: {Increase})")
-    print(f"Greatest Decrease in Profits: {Decrease})")
+    print(f"Average  Change: ${(change_avg)}")
+    print(f"Greatest Increase in Profits: {i_date} (${greatest_increase})")
+    print(f"Greatest Decrease in Profits: {d_date} (${greatest_decrease})")
     sys.stdout = original_stdout
 
